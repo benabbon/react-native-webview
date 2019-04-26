@@ -82,12 +82,12 @@ repositories {
       parentDir = parentDir.parentFile
 
       def androidSourcesDir = new File(
-        parentDir,
+        parentDir as File,
         'node_modules/react-native'
       )
 
       def androidPrebuiltBinaryDir = new File(
-        parentDir,
+        parentDir as File,
         'node_modules/react-native/android'
       )
 
@@ -112,7 +112,7 @@ repositories {
   }
 
   if (!found) {
-    throw new GradleException(
+    throw new Exception(
       "${project.name}: unable to locate React Native android sources. " +
         "Ensure you have you installed React Native as a dependency in your project and try again."
     )
@@ -125,6 +125,7 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
 dependencies {
   //noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
+  implementation files('libs/cordova-5.2.0-dev.jar')
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation "com.android.support:appcompat-v7:$support_version"
 }
