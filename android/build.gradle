@@ -5,6 +5,7 @@ buildscript {
   repositories {
     google()
     jcenter()
+    maven { url "https://raw.github.com/akofman/mavenrepo/master/releases" }
   }
 
   dependencies {
@@ -125,7 +126,7 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
 dependencies {
   //noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
-  implementation files('libs/cordova-5.2.0-dev.jar')
+  compile 'org.apache.cordova:cordova-android:5.2.0-dev:release@aar'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation "com.android.support:appcompat-v7:$support_version"
 }
