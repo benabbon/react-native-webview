@@ -61,14 +61,22 @@ import java.util.Locale
  * - canGoForward - boolean, whether it is possible to request GO_FORWARD command
  */
 open class RNCWebViewManager(private val mWebViewConfig: WebViewConfig) : SimpleViewManager<WebView>() {
-    private var engine: SystemWebViewEngine? = null
+    protected var engine: SystemWebViewEngine? = null
 
     override fun getName(): String {
         return REACT_CLASS
     }
 
-    private fun createRNCWebViewInstance(reactContext: ThemedReactContext): RNCWebView {
+    open fun createRNCWebViewInstance(reactContext: ThemedReactContext): RNCWebView {
         return RNCWebView(reactContext)
+    }
+
+    open fun createRNCWebChromeClientInstance(reactContext: ThemedReactContext, engine: SystemWebViewEngine): RNCWebChromeClient {
+        return RNCWebChromeClient(reactContext, engine)
+    }
+
+    open fun createRNCWebViewClientInstance(engine: SystemWebViewEngine): RNCWebViewClient {
+        return RNCWebViewClient(engine)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -76,7 +84,7 @@ open class RNCWebViewManager(private val mWebViewConfig: WebViewConfig) : Simple
         val webView = createRNCWebViewInstance(reactContext)
 
         engine = SystemWebViewEngine(webView as SystemWebView)
-        webView.webChromeClient = RNCWebChromeClient(reactContext, engine!!)
+        webView.webChromeClient = createRNCWebChromeClientInstance(reactContext, engine!!)
         reactContext.addLifecycleEventListener(webView)
         mWebViewConfig.configWebView(webView)
         val settings = webView.settings
@@ -349,7 +357,7 @@ open class RNCWebViewManager(private val mWebViewConfig: WebViewConfig) : Simple
 
     override fun addEventEmitters(reactContext: ThemedReactContext?, view: WebView?) {
         // Do not register default touch emitter and let WebView implementation handle touches
-        view?.webViewClient = engine?.let { RNCWebViewClient(it) }
+        view?.webViewClient = engine?.let { createRNCWebViewClientInstance(it) }
     }
 
     override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any>? {
